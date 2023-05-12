@@ -1,5 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
-import 'package:http/http.dart' as http;
+import 'package:weatherapp_flutter/src/data/datasources/remote/services/dio_client.dart';
 import '../data/datasources/remote/remote_data_source.dart';
 import '../data/datasources/repositories/forecast_repository_impl.dart';
 import '../data/datasources/repositories/weather_repository_impl.dart';
@@ -13,62 +14,43 @@ import '../presentation/bloc/geocoding/forecast_bloc.dart';
 import '../presentation/bloc/weather/weather_bloc.dart';
 
 final locator = GetIt.instance;
+GetIt sl = GetIt.instance;
 
-void init() {
-  // bloc
-  locator.registerFactory(
-        () => WeatherBloc(
-      locator(),
-      // locator(),
-    ),
-  );
-  locator.registerFactory(
-        () => ForecastBloc(
-      locator(),
-    ),
-  );
-  locator.registerFactory(
-        () => DailyForecastBloc(
-      locator(),
-    ),
-  );
+Future<void> serviceLocator({bool isUnitTest = false}) async {
+  if (isUnitTest) {
+    WidgetsFlutterBinding.ensureInitialized();
+    sl.reset();
+    sl.registerSingleton<DioClient>(DioClient(isUnitTest: true));
+    dataSource();
+    repositories();
+    useCase();
+    bloc();
+  }else{
+    sl.registerSingleton<DioClient>(DioClient());
+    dataSource();
+    repositories();
+    useCase();
+    bloc();
+  }
+}
 
-  // use case
-  locator.registerLazySingleton(
-        () => GetCurrWeather(
-      locator(),
-    ),
-  );
-  locator.registerLazySingleton(
-        () => GetHourForecast(
-      locator(),
-    ),
-  );
-  locator.registerLazySingleton(
-        () => GetDailyForecast(
-      locator(),
-    ),
-  );
+void bloc() {
+  sl.registerFactory(() => DailyForecastBloc(sl()));
+  sl.registerFactory(() => ForecastBloc(sl()));
+  sl.registerFactory(() => WeatherBloc(sl()));
+}
 
-  // repository
-  locator.registerLazySingleton<WeatherRepository>(
-        () => WeatherRepositoryImpl(
-      remoteDataSource: locator(),
-    ),
-  );
-  locator.registerLazySingleton<ForecastRepository>(
-        () => ForecastRepositoryImpl(
-      remoteDataSource: locator(),
-    ),
-  );
+void useCase() {
+  sl.registerLazySingleton(() => GetCurrWeather(sl()));
+  sl.registerLazySingleton(() => GetDailyForecast(sl()));
+  sl.registerLazySingleton(() => GetHourForecast(sl()));
+}
 
-  // data source
-  locator.registerLazySingleton<RemoteDataSource>(
-        () => RemoteDataSourceImpl(
-      client: locator(),
-    ),
-  );
+void repositories() {
+  sl.registerLazySingleton<ForecastRepository>(() => ForecastRepositoryImpl(sl()));
+  sl.registerLazySingleton<WeatherRepository>(() => WeatherRepositoryImpl(sl()));
+}
 
-  // external
-  locator.registerLazySingleton(() => http.Client());
+void dataSource() {
+  sl.registerLazySingleton<RemoteDataSource>(() => RemoteDataSourceImpl(sl()));
 }

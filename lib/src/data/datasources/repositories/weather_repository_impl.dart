@@ -12,7 +12,8 @@ import '../../../domain/repositories/weather_repository.dart';
 class WeatherRepositoryImpl implements WeatherRepository {
   final RemoteDataSource remoteDataSource;
 
-  WeatherRepositoryImpl({required this.remoteDataSource});
+  // WeatherRepositoryImpl({required this.remoteDataSource});
+  WeatherRepositoryImpl(this.remoteDataSource);
 
   @override
   Future<Either<Failure, Weather>> getCurrWeather(String cityName) async {

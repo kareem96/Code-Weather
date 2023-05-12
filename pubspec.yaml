@@ -36,7 +36,13 @@ dependencies:
   cupertino_icons: ^1.0.2
   dartz: ^0.10.1
   equatable: ^2.0.3
+
+  # Use as Network Client
   http: ^0.13.5
+  dio: ^4.0.6
+  # logger
+  logger: ^1.1.0
+
   get_it: ^7.2.0
   flutter_bloc: ^8.1.1
   flutter_svg: ^1.0.3

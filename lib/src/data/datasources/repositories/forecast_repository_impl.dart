@@ -15,7 +15,9 @@ import '../../../domain/repositories/forecast_repository.dart';
 class ForecastRepositoryImpl implements ForecastRepository{
   final RemoteDataSource remoteDataSource;
 
-  const ForecastRepositoryImpl({required this.remoteDataSource});
+  // const ForecastRepositoryImpl({required this.remoteDataSource});
+  const ForecastRepositoryImpl(this.remoteDataSource);
+
   @override
   Future<Either<Failure, List<DailyForecast>>> getDailyForecast(num lat, num lon) async{
     // TODO: implement getDailyForecast

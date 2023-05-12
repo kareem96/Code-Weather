@@ -4,13 +4,14 @@ import 'package:weatherapp_flutter/src/presentation/bloc/daily_forecast/daily_fo
 import 'package:weatherapp_flutter/src/presentation/bloc/weather/weather_bloc.dart';
 import 'package:weatherapp_flutter/src/presentation/views/home.dart';
 import 'package:weatherapp_flutter/src/utils/theme.dart';
+import 'src/di/injection.dart';
 import 'src/presentation/bloc/geocoding/forecast_bloc.dart';
 import 'src/utils/routes.dart' as route;
 import 'src/di/injection.dart' as injector;
 
-void main() {
+Future<void> main() async{
+  await serviceLocator();
   WidgetsFlutterBinding.ensureInitialized();
-  injector.init();
   runApp(const MyApp());
 }
 
